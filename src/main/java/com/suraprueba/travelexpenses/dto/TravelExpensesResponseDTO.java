@@ -6,11 +6,11 @@ import java.util.List;
 public class TravelExpensesResponseDTO {
 
     private List<MonthlyExpensesDTO> months;
-    private BigDecimal totalGeneral;
+    private BigDecimal totalAllMonths;
 
     public TravelExpensesResponseDTO(List<MonthlyExpensesDTO> months, BigDecimal totalGeneral) {
         this.months = months;
-        this.totalGeneral = totalGeneral;
+        this.totalAllMonths = totalGeneral;
     }
 
     public List<MonthlyExpensesDTO> getMonths() {
@@ -21,11 +21,11 @@ public class TravelExpensesResponseDTO {
         this.months = months;
     }
 
-    public BigDecimal getTotalGeneral() {
-        return totalGeneral;
+    public BigDecimal getTotalAllMonths() {
+        return totalAllMonths;
     }
 
-    public void setTotalGeneral(BigDecimal totalGeneral) {
-        this.totalGeneral = totalGeneral;
+    public void setTotalAllMonths(BigDecimal totalAllMonths) {
+        this.totalAllMonths = totalAllMonths;
     }
 }

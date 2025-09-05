@@ -7,14 +7,14 @@ public class EmployeeMonthlyExpensesDTO {
 
     private String employee;
     private List<ExpenseDTO> expenses;
-    private BigDecimal totalEmployee;
+    private BigDecimal totalEmployeeWithIva;
     private String coveredBy;
 
     public EmployeeMonthlyExpensesDTO(String employee, List<ExpenseDTO> expenses,
                                       BigDecimal totalEmployee, String coveredBy) {
         this.employee = employee;
         this.expenses = expenses;
-        this.totalEmployee = totalEmployee;
+        this.totalEmployeeWithIva = totalEmployee;
         this.coveredBy = coveredBy;
     }
 
@@ -34,12 +34,12 @@ public class EmployeeMonthlyExpensesDTO {
         this.expenses = expenses;
     }
 
-    public BigDecimal getTotalEmployee() {
-        return totalEmployee;
+    public BigDecimal getTotalEmployeeWithIva() {
+        return totalEmployeeWithIva;
     }
 
-    public void setTotalEmployee(BigDecimal totalEmployee) {
-        this.totalEmployee = totalEmployee;
+    public void setTotalEmployeeWithIva(BigDecimal totalEmployeeWithIva) {
+        this.totalEmployeeWithIva = totalEmployeeWithIva;
     }
 
     public String getCoveredBy() {
