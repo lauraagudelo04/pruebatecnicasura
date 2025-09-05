@@ -23,15 +23,15 @@ public class Expense {
     @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee;
 
+    public Expense() {
+
+    }
+
     public Expense(Long id, LocalDate expenseDate, BigDecimal amount, Employee employee) {
         this.id = id;
         this.expenseDate = expenseDate;
         this.amount = amount;
         this.employee = employee;
-    }
-
-    public Expense() {
-
     }
 
     public Long getId() {

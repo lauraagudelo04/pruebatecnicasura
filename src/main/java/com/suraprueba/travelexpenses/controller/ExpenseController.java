@@ -1,4 +1,5 @@
 package com.suraprueba.travelexpenses.controller;
 
-public class EmployeeExpenseController {
+public class ExpenseController {
+
 }

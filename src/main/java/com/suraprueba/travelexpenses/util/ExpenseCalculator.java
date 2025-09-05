@@ -5,8 +5,8 @@ import java.util.Optional;
 
 public class ExpenseCalculator {
 
-    private static final BigDecimal IVA_RATE = new BigDecimal(0.19); // 19% IVA
-    private static final BigDecimal LIMIT = new BigDecimal(1000000); //Limit to know who assumes the expense
+    private static final BigDecimal IVA_RATE = new BigDecimal("0.19"); // 19% IVA
+    private static final BigDecimal LIMIT = new BigDecimal("1000000"); //Limit to know who assumes the expense
 
     public static BigDecimal calculateTotalWithIva(BigDecimal amount){
         return Optional.ofNullable(amount)

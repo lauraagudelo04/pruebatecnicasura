@@ -2,6 +2,7 @@ package com.suraprueba.travelexpenses.domain;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -16,16 +17,16 @@ public class Employee {
     private String name;
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
-    private List<Expense> expenses;
+    private List<Expense> expenses = new ArrayList<>();
+
+    public Employee() {
+
+    }
 
     public Employee(Long id, String name, List<Expense> expenses) {
         this.id = id;
         this.name = name;
         this.expenses = expenses;
-    }
-
-    public Employee() {
-
     }
 
     public Long getId() {
