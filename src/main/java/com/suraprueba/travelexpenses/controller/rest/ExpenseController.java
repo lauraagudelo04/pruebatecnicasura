@@ -1,24 +1,16 @@
 package com.suraprueba.travelexpenses.controller.rest;
 
+import com.suraprueba.travelexpenses.controller.response.GetTotalExpensesResponse;
 import com.suraprueba.travelexpenses.controller.response.GetTravelExpensesResponse;
-import com.suraprueba.travelexpenses.domain.Employee;
+import com.suraprueba.travelexpenses.dto.TotalExpensesDTO;
 import com.suraprueba.travelexpenses.service.IExpenseService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.time.LocalDate;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/expenses")
@@ -47,16 +39,20 @@ public class ExpenseController {
         return new ResponseEntity<>(getTravelExpensesResponse, httpStatusCode);
     }
 
-    @GetMapping("/with-expenses")
-    public ResponseEntity<Page<Employee>> getEmployeesWithExpensesInDateRange(
-            @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+    @GetMapping("/total")
+    @Operation(summary = "Obtener total de gastos de viaje", description = "Devuelve el total acumulado de todos los gastos de viaje registrados de todos los empleados con iva y con iva.")
+    public ResponseEntity<GetTotalExpensesResponse> getTotalExpenses() {
+        var httpStatusCode = HttpStatus.ACCEPTED;
+        var getTotalExpensesResponse = new GetTotalExpensesResponse();
 
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Employee> employees = expenseService.findAllWithExpensesInDateRange(startDate, endDate, pageable);
-
-        return ResponseEntity.ok(employees);
+        try {
+            getTotalExpensesResponse.setData(expenseService.getTotalExpenses());
+            getTotalExpensesResponse.getMessage().add("Gastos totales de viajes consultados exitosamente");
+        }catch (Exception e) {
+            httpStatusCode = HttpStatus.INTERNAL_SERVER_ERROR;
+            getTotalExpensesResponse.getMessage().add("Error al consultar los gastos totales de viajes: " + e.getMessage());
+        }
+        return new ResponseEntity<>(getTotalExpensesResponse, httpStatusCode);
     }
+
 }

@@ -2,10 +2,7 @@ package com.suraprueba.travelexpenses.service.impl;
 
 import com.suraprueba.travelexpenses.domain.Employee;
 import com.suraprueba.travelexpenses.domain.Expense;
-import com.suraprueba.travelexpenses.dto.EmployeeMonthlyExpensesDTO;
-import com.suraprueba.travelexpenses.dto.ExpenseDTO;
-import com.suraprueba.travelexpenses.dto.MonthlyExpensesDTO;
-import com.suraprueba.travelexpenses.dto.TravelExpensesResponseDTO;
+import com.suraprueba.travelexpenses.dto.*;
 import com.suraprueba.travelexpenses.repository.IEmployeeRepository;
 import com.suraprueba.travelexpenses.repository.IExpenseRepository;
 import com.suraprueba.travelexpenses.service.IExpenseService;
@@ -64,11 +61,9 @@ public class ExpenseServiceImpl implements IExpenseService {
                                 .map(e -> new ExpenseDTO(e.getExpenseDate(), e.getAmount()))
                                 .toList();
 
-                        BigDecimal totalWithoutIva = empExpenses.stream()
-                                .map(Expense::getAmount)
-                                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-                        BigDecimal totalWithIva = ExpenseCalculator.calculateTotalWithIva(totalWithoutIva);
+                        Map<String, BigDecimal> totals = calculateTotals(empExpenses);
+                        BigDecimal totalWithoutIva = totals.get("totalWithoutIva");
+                        BigDecimal totalWithIva = totals.get("totalWithIva");
                         BigDecimal ivaAmount = totalWithIva.subtract(totalWithoutIva);
                         String coveredBy = ExpenseCalculator.whoAssumes(totalWithIva);
 
@@ -89,11 +84,31 @@ public class ExpenseServiceImpl implements IExpenseService {
     }
 
     @Override
-    public Page<Employee> findAllWithExpensesInDateRange(LocalDate startDate, LocalDate endDate, Pageable pageable) {
-        List<Employee> employees = employeeRepository.findAllWithExpensesInDateRange(startDate, endDate, pageable);
-        if (employees.isEmpty()) {
-            throw new ResponseStatusException(HttpStatusCode.valueOf(404), "No se encontraron empleados con gastos en el rango de fechas proporcionado.");
+    public TotalExpensesDTO getTotalExpenses() {
+        List<Expense> allExpenses = expenseRepository.findAll();
+        if (allExpenses.isEmpty()) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(404), "No se encontraron gastos registrados.");
         }
-        return new PageImpl<>(employees, pageable, employees.size());
+
+        Map<String, BigDecimal> totals = calculateTotals(allExpenses);
+        BigDecimal totalWithoutIva = totals.get("totalWithoutIva");
+        BigDecimal totalWithIva = totals.get("totalWithIva");
+
+        return new TotalExpensesDTO(totalWithoutIva, totalWithIva);
     }
+
+    private Map<String, BigDecimal> calculateTotals(List<Expense> expenses) {
+        BigDecimal totalWithoutIva = expenses.stream()
+                .map(Expense::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal totalWithIva = ExpenseCalculator.calculateTotalWithIva(totalWithoutIva);
+
+        Map<String, BigDecimal> totals = new HashMap<>();
+        totals.put("totalWithoutIva", totalWithoutIva);
+        totals.put("totalWithIva", totalWithIva);
+
+        return totals;
+    }
+
 }
