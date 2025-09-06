@@ -1,5 +1,6 @@
 package com.suraprueba.travelexpenses.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ public class Employee {
     private String name;
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Expense> expenses = new ArrayList<>();
 
     public Employee() {

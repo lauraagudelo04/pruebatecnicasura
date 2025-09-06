@@ -2,7 +2,6 @@ package com.suraprueba.travelexpenses.controller.rest;
 
 import com.suraprueba.travelexpenses.controller.response.GetTotalExpensesResponse;
 import com.suraprueba.travelexpenses.controller.response.GetTravelExpensesResponse;
-import com.suraprueba.travelexpenses.dto.TotalExpensesDTO;
 import com.suraprueba.travelexpenses.service.IExpenseService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

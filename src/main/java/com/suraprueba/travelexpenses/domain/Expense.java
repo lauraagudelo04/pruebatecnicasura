@@ -1,5 +1,6 @@
 package com.suraprueba.travelexpenses.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
@@ -22,7 +23,7 @@ public class Expense {
 
     @ManyToOne
     @JoinColumn(name = "employee_id", nullable = false)
-    @JsonIgnore
+    @JsonBackReference
     private Employee employee;
 
     public Expense() {
