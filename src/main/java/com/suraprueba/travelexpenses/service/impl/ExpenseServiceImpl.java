@@ -1,21 +1,15 @@
 package com.suraprueba.travelexpenses.service.impl;
 
-import com.suraprueba.travelexpenses.domain.Employee;
 import com.suraprueba.travelexpenses.domain.Expense;
 import com.suraprueba.travelexpenses.dto.*;
-import com.suraprueba.travelexpenses.repository.IEmployeeRepository;
 import com.suraprueba.travelexpenses.repository.IExpenseRepository;
 import com.suraprueba.travelexpenses.service.IExpenseService;
 import com.suraprueba.travelexpenses.util.ExpenseCalculator;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -24,11 +18,10 @@ import java.util.stream.Collectors;
 public class ExpenseServiceImpl implements IExpenseService {
 
     private final IExpenseRepository expenseRepository;
-    private final IEmployeeRepository employeeRepository;
 
-    public ExpenseServiceImpl(IExpenseRepository expenseRepository, IEmployeeRepository employeeRepository) {
+    public ExpenseServiceImpl(IExpenseRepository expenseRepository) {
         this.expenseRepository = expenseRepository;
-        this.employeeRepository = employeeRepository;
+
     }
 
     @Override
