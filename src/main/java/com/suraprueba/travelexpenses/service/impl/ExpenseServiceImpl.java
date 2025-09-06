@@ -5,7 +5,6 @@ import com.suraprueba.travelexpenses.dto.EmployeeMonthlyExpensesDTO;
 import com.suraprueba.travelexpenses.dto.ExpenseDTO;
 import com.suraprueba.travelexpenses.dto.MonthlyExpensesDTO;
 import com.suraprueba.travelexpenses.dto.TravelExpensesResponseDTO;
-import com.suraprueba.travelexpenses.repository.IEmployeeRepository;
 import com.suraprueba.travelexpenses.repository.IExpenseRepository;
 import com.suraprueba.travelexpenses.service.IExpenseService;
 import com.suraprueba.travelexpenses.util.ExpenseCalculator;
@@ -19,11 +18,9 @@ import java.util.stream.Collectors;
 @Service
 public class ExpenseServiceImpl implements IExpenseService {
 
-    private final IEmployeeRepository employeeExpenseRepository;
     private final IExpenseRepository expenseRepository;
 
-    public ExpenseServiceImpl(IEmployeeRepository employeeExpenseRepository, IExpenseRepository expenseRepository) {
-        this.employeeExpenseRepository = employeeExpenseRepository;
+    public ExpenseServiceImpl(IExpenseRepository expenseRepository) {
         this.expenseRepository = expenseRepository;
 
     }
@@ -56,7 +53,7 @@ public class ExpenseServiceImpl implements IExpenseService {
 
                         List<ExpenseDTO> expenseDTOs = empExpenses.stream()
                                 .map(e -> new ExpenseDTO(e.getExpenseDate(), e.getAmount()))
-                                .collect(Collectors.toList());
+                                .toList();
 
                         BigDecimal totalWithoutIva = empExpenses.stream()
                                 .map(Expense::getAmount)
@@ -69,7 +66,7 @@ public class ExpenseServiceImpl implements IExpenseService {
                         return new EmployeeMonthlyExpensesDTO(employeeName, expenseDTOs,totalWithoutIva,ivaAmount, totalWithIva, coveredBy);
                     })
                     .sorted(Comparator.comparing(EmployeeMonthlyExpensesDTO::getEmployee))
-                    .collect(Collectors.toList());
+                    .toList();
 
             BigDecimal totalMonth = employeeSummaries.stream()
                     .map(EmployeeMonthlyExpensesDTO::getTotalEmployeeWithIva)
