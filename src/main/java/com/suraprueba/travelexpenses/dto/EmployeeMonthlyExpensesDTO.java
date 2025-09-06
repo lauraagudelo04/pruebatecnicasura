@@ -7,15 +7,34 @@ public class EmployeeMonthlyExpensesDTO {
 
     private String employee;
     private List<ExpenseDTO> expenses;
+    private BigDecimal totalWithoutIva;
+    private BigDecimal ivaAmount;
     private BigDecimal totalEmployeeWithIva;
     private String coveredBy;
 
-    public EmployeeMonthlyExpensesDTO(String employee, List<ExpenseDTO> expenses,
-                                      BigDecimal totalEmployee, String coveredBy) {
+    public EmployeeMonthlyExpensesDTO(String employee, List<ExpenseDTO> expenses, BigDecimal totalWithoutIva, BigDecimal ivaAmount, BigDecimal totalEmployeeWithIva, String coveredBy) {
         this.employee = employee;
         this.expenses = expenses;
-        this.totalEmployeeWithIva = totalEmployee;
+        this.totalWithoutIva = totalWithoutIva;
+        this.ivaAmount = ivaAmount;
+        this.totalEmployeeWithIva = totalEmployeeWithIva;
         this.coveredBy = coveredBy;
+    }
+
+    public BigDecimal getTotalWithoutIva() {
+        return totalWithoutIva;
+    }
+
+    public void setTotalWithoutIva(BigDecimal totalWithoutIva) {
+        this.totalWithoutIva = totalWithoutIva;
+    }
+
+    public BigDecimal getIvaAmount() {
+        return ivaAmount;
+    }
+
+    public void setIvaAmount(BigDecimal ivaAmount) {
+        this.ivaAmount = ivaAmount;
     }
 
     public String getEmployee() {

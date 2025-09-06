@@ -58,14 +58,15 @@ public class ExpenseServiceImpl implements IExpenseService {
                                 .map(e -> new ExpenseDTO(e.getExpenseDate(), e.getAmount()))
                                 .collect(Collectors.toList());
 
-                        BigDecimal total = empExpenses.stream()
+                        BigDecimal totalWithoutIva = empExpenses.stream()
                                 .map(Expense::getAmount)
                                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-                        BigDecimal totalWithVat = ExpenseCalculator.calculateTotalWithIva(total);
-                        String coveredBy = ExpenseCalculator.whoAssumes(totalWithVat);
+                        BigDecimal totalWithIva = ExpenseCalculator.calculateTotalWithIva(totalWithoutIva);
+                        BigDecimal ivaAmount = totalWithIva.subtract(totalWithoutIva);
+                        String coveredBy = ExpenseCalculator.whoAssumes(totalWithIva);
 
-                        return new EmployeeMonthlyExpensesDTO(employeeName, expenseDTOs, totalWithVat, coveredBy);
+                        return new EmployeeMonthlyExpensesDTO(employeeName, expenseDTOs,totalWithoutIva,ivaAmount, totalWithIva, coveredBy);
                     })
                     .sorted(Comparator.comparing(EmployeeMonthlyExpensesDTO::getEmployee))
                     .collect(Collectors.toList());
