@@ -13,6 +13,9 @@ public class TravelExpensesResponseDTO {
         this.totalAllMonths = totalGeneral;
     }
 
+    public TravelExpensesResponseDTO() {
+    }
+
     public List<MonthlyExpensesDTO> getMonths() {
         return months;
     }
