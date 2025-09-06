@@ -37,6 +37,8 @@ src/main/java/com/suraprueba/expensesapi/
 ├── dto/                     # Data Transfer Objects
 │   ├── EmployeeMonthlyExpensesDTO.java
 │   ├── ExpenseDTO.java
+│   ├── EmployeeDTO
+│   ├── PageResponseDTO
 │   ├── MonthlyExpensesDTO.java
 │   ├── TotalExpensesDTO.java
 │   └── TravelExpensesResponseDTO.java
@@ -63,13 +65,12 @@ src/main/java/com/suraprueba/expensesapi/
 1. Clona este repositorio en tu máquina local:
    ```bash
    git clone https://github.com/lauraagudelo04/pruebatecnicasura.git
-    cd pruebatecnicasura
     ```
 2. Asegúrate de tener PostgreSQL instalado y en ejecución. Crea una base de datos llamada `travelexpensesdb` y actualiza las credenciales de password en `src/main/resources/application.properties` si es necesario.
 
-``` sql
-CREATE DATABASE travelexpensesdb;
-```
+    ``` sql
+    CREATE DATABASE travelexpensesdb;
+    ```
 
 3. Ejecuta la aplicación utilizando Gradle:
    ```bash
