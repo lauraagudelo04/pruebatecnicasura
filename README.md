@@ -34,7 +34,7 @@ El reto consiste en una API REST que permite consultar los gastos de viaje de lo
    
 4. Acceder a la aplicación en:
 
-   - API principal: http://localhost:8080/api/expenses/summary
+   - API principal: http://localhost:8080/api/v1/expenses
    - Documentación Swagger: http://localhost:8080/swagger-ui.html
 
 ---

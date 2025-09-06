@@ -1,5 +1,6 @@
 package com.suraprueba.travelexpenses.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -13,7 +14,7 @@ public class Expense {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "expense_date", nullable = false)
     private LocalDate expenseDate;
 
     @Column(nullable = false)
@@ -21,6 +22,7 @@ public class Expense {
 
     @ManyToOne
     @JoinColumn(name = "employee_id", nullable = false)
+    @JsonIgnore
     private Employee employee;
 
     public Expense() {
