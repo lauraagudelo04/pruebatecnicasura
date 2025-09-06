@@ -5,6 +5,7 @@ import com.suraprueba.travelexpenses.dto.EmployeeDTO;
 import com.suraprueba.travelexpenses.dto.ExpenseDTO;
 import com.suraprueba.travelexpenses.dto.PageResponseDTO;
 import com.suraprueba.travelexpenses.service.IEmployeeService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,6 +32,7 @@ public class EmployeeController {
     }
 
     @GetMapping("/with-expenses")
+    @Operation(summary = "Obtener empleados con gastos en un rango de fechas", description = "Devuelve una lista paginada de empleados que tienen gastos registrados dentro de un rango de fechas especificado.")
     public ResponseEntity<PageResponseDTO<EmployeeDTO>> getEmployeesWithExpensesInDateRange(
             @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
