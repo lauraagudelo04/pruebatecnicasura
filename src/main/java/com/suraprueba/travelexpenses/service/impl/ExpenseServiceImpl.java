@@ -13,7 +13,9 @@ import com.suraprueba.travelexpenses.util.ExpenseCalculator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -89,7 +91,9 @@ public class ExpenseServiceImpl implements IExpenseService {
     @Override
     public Page<Employee> findAllWithExpensesInDateRange(LocalDate startDate, LocalDate endDate, Pageable pageable) {
         List<Employee> employees = employeeRepository.findAllWithExpensesInDateRange(startDate, endDate, pageable);
+        if (employees.isEmpty()) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(404), "No se encontraron empleados con gastos en el rango de fechas proporcionado.");
+        }
         return new PageImpl<>(employees, pageable, employees.size());
     }
-
 }
