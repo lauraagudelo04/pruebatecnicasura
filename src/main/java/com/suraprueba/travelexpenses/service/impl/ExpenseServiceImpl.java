@@ -1,17 +1,21 @@
 package com.suraprueba.travelexpenses.service.impl;
 
+import com.suraprueba.travelexpenses.domain.Employee;
 import com.suraprueba.travelexpenses.domain.Expense;
-import com.suraprueba.travelexpenses.dto.EmployeeMonthlyExpensesDTO;
-import com.suraprueba.travelexpenses.dto.ExpenseDTO;
-import com.suraprueba.travelexpenses.dto.MonthlyExpensesDTO;
-import com.suraprueba.travelexpenses.dto.TravelExpensesResponseDTO;
+import com.suraprueba.travelexpenses.dto.*;
 import com.suraprueba.travelexpenses.repository.IEmployeeRepository;
 import com.suraprueba.travelexpenses.repository.IExpenseRepository;
 import com.suraprueba.travelexpenses.service.IExpenseService;
 import com.suraprueba.travelexpenses.util.ExpenseCalculator;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -19,13 +23,12 @@ import java.util.stream.Collectors;
 @Service
 public class ExpenseServiceImpl implements IExpenseService {
 
-    private final IEmployeeRepository employeeExpenseRepository;
     private final IExpenseRepository expenseRepository;
+    private final IEmployeeRepository employeeRepository;
 
-    public ExpenseServiceImpl(IEmployeeRepository employeeExpenseRepository, IExpenseRepository expenseRepository) {
-        this.employeeExpenseRepository = employeeExpenseRepository;
+    public ExpenseServiceImpl(IExpenseRepository expenseRepository, IEmployeeRepository employeeRepository) {
         this.expenseRepository = expenseRepository;
-
+        this.employeeRepository = employeeRepository;
     }
 
     @Override
@@ -56,19 +59,18 @@ public class ExpenseServiceImpl implements IExpenseService {
 
                         List<ExpenseDTO> expenseDTOs = empExpenses.stream()
                                 .map(e -> new ExpenseDTO(e.getExpenseDate(), e.getAmount()))
-                                .collect(Collectors.toList());
+                                .toList();
 
-                        BigDecimal total = empExpenses.stream()
-                                .map(Expense::getAmount)
-                                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                        Map<String, BigDecimal> totals = calculateTotals(empExpenses);
+                        BigDecimal totalWithoutIva = totals.get("totalWithoutIva");
+                        BigDecimal totalWithIva = totals.get("totalWithIva");
+                        BigDecimal ivaAmount = totalWithIva.subtract(totalWithoutIva);
+                        String coveredBy = ExpenseCalculator.whoAssumes(totalWithIva);
 
-                        BigDecimal totalWithVat = ExpenseCalculator.calculateTotalWithIva(total);
-                        String coveredBy = ExpenseCalculator.whoAssumes(totalWithVat);
-
-                        return new EmployeeMonthlyExpensesDTO(employeeName, expenseDTOs, totalWithVat, coveredBy);
+                        return new EmployeeMonthlyExpensesDTO(employeeName, expenseDTOs,totalWithoutIva,ivaAmount, totalWithIva, coveredBy);
                     })
                     .sorted(Comparator.comparing(EmployeeMonthlyExpensesDTO::getEmployee))
-                    .collect(Collectors.toList());
+                    .toList();
 
             BigDecimal totalMonth = employeeSummaries.stream()
                     .map(EmployeeMonthlyExpensesDTO::getTotalEmployeeWithIva)
@@ -80,4 +82,33 @@ public class ExpenseServiceImpl implements IExpenseService {
         }
         return new TravelExpensesResponseDTO(monthlySummaries, totalAllMonths);
     }
+
+    @Override
+    public TotalExpensesDTO getTotalExpenses() {
+        List<Expense> allExpenses = expenseRepository.findAll();
+        if (allExpenses.isEmpty()) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(404), "No se encontraron gastos registrados.");
+        }
+
+        Map<String, BigDecimal> totals = calculateTotals(allExpenses);
+        BigDecimal totalWithoutIva = totals.get("totalWithoutIva");
+        BigDecimal totalWithIva = totals.get("totalWithIva");
+
+        return new TotalExpensesDTO(totalWithoutIva, totalWithIva);
+    }
+
+    private Map<String, BigDecimal> calculateTotals(List<Expense> expenses) {
+        BigDecimal totalWithoutIva = expenses.stream()
+                .map(Expense::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal totalWithIva = ExpenseCalculator.calculateTotalWithIva(totalWithoutIva);
+
+        Map<String, BigDecimal> totals = new HashMap<>();
+        totals.put("totalWithoutIva", totalWithoutIva);
+        totals.put("totalWithIva", totalWithIva);
+
+        return totals;
+    }
+
 }
