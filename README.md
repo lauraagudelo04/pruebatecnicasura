@@ -1,4 +1,4 @@
-# 👩🏻‍💻💵Consulta de gastos de viaje emepleados SURA
+# 👩🏻‍💻💵Consulta de gastos de viaje empleados SURA
 Este repositorio contiene el desarrollo de la **prueba técnica** para la práctica profesional en el área de tecnología en SURA.  
 
 El reto consiste en una API REST que permite consultar los gastos de viaje de los empleados mostrandolos en una lista con los siguientes datos:
